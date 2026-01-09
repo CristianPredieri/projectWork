@@ -1,0 +1,11 @@
+.container { 
+    width : auto;
+    height: 1080px;
+    background-color: black;
+}
+
+html, body {
+    margin: 0px 0px;
+     padding : 0px 0px;
+    
+}

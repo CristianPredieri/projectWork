@@ -1,0 +1,1 @@
+{"scripts":{"start":"tsx index.ts"},"dependencies":{"axios":"^1.13.2","bootstrap":"^5.3.8","fastify":"^5.6.2","tsx":"^4.21.0"},"devDependencies":{"ts-node":"^10.9.2","typescript":"^5.8.3"}}

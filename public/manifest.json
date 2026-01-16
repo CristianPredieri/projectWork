@@ -1,19 +1,14 @@
 {
   "name": "PopChat",
   "short_name": "PopChat",
-  "start_url": "/project1/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#FF59FF",
   "theme_color": "#FF59FF",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icone/icona.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
       "type": "image/png"
     }
   ]

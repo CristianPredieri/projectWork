@@ -1,7 +1,7 @@
 {
   "name": "PopChat",
   "short_name": "PopChat",
-  "start_url": "public/index.html",
+  "start_url": "/project1/index.html",
   "display": "standalone",
   "background_color": "#FF59FF",
   "theme_color": "#FF59FF",

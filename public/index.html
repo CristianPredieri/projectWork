@@ -1,22 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>title</title>
+
+    <!-- questa parte l'ha fatta chat per creare la pwa siccome ancora non è
+        una vera app ho preferito fare una pwa che è un misto ed è per cose + piccole
+        devo rivderla perchè alla fine mi sa che è meglio fare un' app store -->
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log("Service Worker registrato"))
+                .catch(err => console.log("Service Worker fallito:", err));
+        }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF59FF">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log("Service Worker registrato"))
+                .catch(err => console.log("Service Worker fallito:", err));
+        }
+    </script>
+
+
+    <meta charset="UTF-8">
+    <title>PopChat</title>
+
+    <!-- mobile responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="index.css">
-    <link rel ="stylesheet" href="common.css">
-    
 </head>
 
+<body class="bg-gradient">
 
+    <!-- CARD: mi piaceva l'idea di fare una card come log in e sign up -->
+    <div class="content container d-flex flex-column justify-content-between align-items-center">
 
-<body>
+        <div class="row w-100">
+            <header class="mt-3 text-center">
+                <h1 class="fw-bold">🎈 PopChat 🎈</h1>
+            </header>
+        </div>
 
+        <div class="row w-100 mt-4">
+            <main class="d-grid gap-3 col-12 col-sm-8 col-md-6 mx-auto text-center">
+                <button class="btn btn-lg btn-login" onclick="location.href='login.php'">
+                    Log In
+                </button>
+                <button class="btn btn-lg btn-signup" onclick="location.href='signup.php'">
+                    Sign Up
+                </button>
+            </main>
+        </div>
 
-    <div id = "container" class="container">CIAOOOO</div>
+        <div class="row w-100 mt-4">
+            <footer class="mb-2 text-muted small text-center">
+                &copy; 2024 PopChat Inc.
+            </footer>
+        </div>
 
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

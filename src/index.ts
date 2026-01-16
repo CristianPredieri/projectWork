@@ -1,0 +1,35 @@
+import fastify from "fastify"
+import fastifyStatic from "@fastify/static"
+import { join } from "path"
+import { Context } from "./type"
+import standartRoute from "./route/standartRoute"
+
+const main = async () => {
+    const app = fastify()
+
+    const context: Context = {
+        app: app
+    }
+
+    standartRoute(context)
+
+    app.setErrorHandler(async (err, request, reply) => {
+        console.log("Error occurred:", err)
+
+        return reply.status(500).send({
+            error: "Internal Server Error",
+        })
+    })
+
+    app.register(fastifyStatic, {
+        root: join(__dirname, "../public"),
+    })
+    app.listen({
+        port: 3000,
+        host: "0.0.0.0"
+    }).then(() => {
+        console.log("Server is running on http://localhost:3000")
+    })
+}
+
+main()

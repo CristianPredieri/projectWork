@@ -1,5 +1,6 @@
 import fastify from "fastify"
 import fastifyStatic from "@fastify/static"
+import fastifyCookie from "@fastify/cookie"
 import { join } from "path"
 import { Context } from "./type"
 import standartRoute from "./route/standartRoute"
@@ -11,8 +12,12 @@ const main = async () => {
         app: app
     }
 
+    await app.register(fastifyCookie)
     standartRoute(context)
 
+    app.addHook("preHandler", async (req, reply) => {
+        console.log(req.cookies)
+    })
     app.setErrorHandler(async (err, request, reply) => {
         console.log("Error occurred:", err)
 

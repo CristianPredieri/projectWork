@@ -8,4 +8,7 @@ export default function (context: Context) {
     app.get("/", async (request : any, reply : any) => {  
         reply.redirect( "../index.html")
     })
+    app.post("/", async (request: any, reply: any) => {
+        reply.redirect("../index.html")
+    })
 }

@@ -1,9 +1,11 @@
 import fastify from "fastify"
+
 import fastifyStatic from "@fastify/static"
 import fastifyCookie from "@fastify/cookie"
 import { join } from "path"
 import { Context } from "./type"
 import standartRoute from "./route/standartRoute"
+import login from "./route/login"
 
 const main = async () => {
     const app = fastify()
@@ -13,7 +15,8 @@ const main = async () => {
     }
 
     await app.register(fastifyCookie)
-    standartRoute(context)
+    await standartRoute(context)
+    await login(context)
 
     app.addHook("preHandler", async (req, reply) => {
         console.log(req.cookies)

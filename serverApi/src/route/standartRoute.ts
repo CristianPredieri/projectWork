@@ -1,4 +1,4 @@
-import {Context} from "../type"
+import { Context } from "../modules/type"
 
 export default function (context: Context) {
     

@@ -1,11 +1,13 @@
 import fastify from "fastify"
-
 import fastifyStatic from "@fastify/static"
 import fastifyCookie from "@fastify/cookie"
 import { join } from "path"
-import { Context } from "./type"
+import { Context } from "./modules/type"
 import standartRoute from "./route/standartRoute"
 import login from "./route/login"
+import loginPage from "./route/loginPage"
+import signupPage from "./route/signupPage"
+
 
 const main = async () => {
     const app = fastify()
@@ -17,9 +19,11 @@ const main = async () => {
     await app.register(fastifyCookie)
     await standartRoute(context)
     await login(context)
-
+    await loginPage(context)
+    await signupPage(context)
+    
     app.addHook("preHandler", async (req, reply) => {
-        console.log(req.cookies)
+        //console.log(req.cookies)
     })
     app.setErrorHandler(async (err, request, reply) => {
         console.log("Error occurred:", err)

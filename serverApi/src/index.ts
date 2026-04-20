@@ -1,6 +1,7 @@
 import fastify from "fastify"
 import fastifyStatic from "@fastify/static"
 import fastifyCookie from "@fastify/cookie"
+import * as mariadb from "mariadb"
 import { join } from "path"
 import { Context } from "./modules/type"
 import standartRoute from "./route/standartRoute"
@@ -9,19 +10,28 @@ import loginPage from "./route/loginPage"
 import signupPage from "./route/signupPage"
 
 
+
 const main = async () => {
     const app = fastify()
 
     const context: Context = {
-        app: app
+        app: app,
+        pool: await mariadb.createPool({
+            port: 3500,
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'projectwork'
+        })
     }
+
 
     await app.register(fastifyCookie)
     await standartRoute(context)
     await login(context)
     await loginPage(context)
     await signupPage(context)
-    
+
     app.addHook("preHandler", async (req, reply) => {
         //console.log(req.cookies)
     })

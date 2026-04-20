@@ -75,17 +75,56 @@
     <div id='form'>
         <h2>Accedi</h2>
 
-        <form method='POST'>
-            <input type='tel' name='telefono' placeholder='Telefono' value='" . htmlspecialchars($telefono) . "'
+        <form method='POST'  id="loginForm">
+            <h2 id="badLogin"></h2>
+            <input id="userTag" type='text' name='userTag' placeholder='Email o Username'
                 required><br>
 
-            <input type='password' name='password' placeholder='Password' required><br>
+            <input  id="psw" type='password' name='password' placeholder='Password' required><br>
 
             <input type='submit' name='submit' value='Accedi'>
         </form>
 
-        " . ($messaggio ? "<div id='messaggio'>$messaggio</div>" : "") . "
     </div>
 </body>
 
+<script>
+      const form = document.getElementById('loginForm')
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault() // Impedisce il comportamento predefinito del form
+            const formData = new FormData(form)
+            const data = Object.fromEntries(formData.entries()) // Converte i dati del form in un oggetto
+
+
+            await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+            .then(res => {
+                if (res.redirect) {
+                    window.location.href = res.redirect;
+                } else {
+                    document.getElementById('badLogin').textContent = "Credenziali errate, riprova!";
+                    document.getElementById('badLogin').style.color = "red";
+                    document.getElementById('userTag').value = "";
+                    document.getElementById('psw').value = "";
+                    document.getElementById('userTag').focus();
+                    document.getElementById("userTag").style.borderColor = "red";
+                    document.getElementById("psw").style.borderColor = "red";
+
+
+                    document.getElementById("psw").addEventListener('input', () => {
+                        document.getElementById("psw").style.borderColor = "";
+                    })
+                    document.getElementById("userTag").addEventListener('input', () => {
+                        document.getElementById("userTag").style.borderColor = "";
+                    })
+                }
+            })
+        })
+</script>
 </html>

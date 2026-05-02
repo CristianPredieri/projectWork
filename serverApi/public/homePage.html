@@ -7,4 +7,17 @@
         <p>Welcome to PopChat!</p>
     </body>
     
+
+<script> 
+ let channel = new EventSource("/connSocket")
+ channel.onmessage = (event) => {
+     const data = JSON.parse(event.data)
+
+ }
+ 
+ channel.onerror = (err) => {
+    console.error("SSE error:", err)
+}
+</script>
+
 </html>

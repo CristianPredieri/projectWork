@@ -4,6 +4,8 @@ import fastifyCookie from "@fastify/cookie"
 import * as mariadb from "mariadb"
 import { join } from "path"
 import { Context } from "./modules/type"
+import { createSession } from "better-sse";
+
 import standartRoute from "./route/standartRoute"
 import login from "./route/login"
 import loginPage from "./route/loginPage"

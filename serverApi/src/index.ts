@@ -35,8 +35,31 @@ const main = async () => {
     await signupPage(context)
 
     app.addHook("preHandler", async (req, reply) => {
-        //console.log(req.cookies)
-    })
+        const sessionId = req.cookies.sessionId;
+        
+        
+        if (req.url === "/loginPage" || req.url === "/signupPage") {
+            return
+        }
+
+        if (req.url === "/homePage.html") {
+            if (!sessionId) {
+                return reply.redirect("../index.html");
+            }
+        }
+        const sessions = await context.pool.query(
+            "SELECT * FROM sessions WHERE id = ?",
+            [sessionId]
+        );
+
+        if (sessions.length === 0) {
+            return reply.redirect("../login.html");
+        }
+        return reply.redirect("../homePage.html")
+
+
+    });
+
     app.setErrorHandler(async (err, request, reply) => {
         console.log("Error occurred:", err)
 

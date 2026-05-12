@@ -24,14 +24,12 @@ export default function (context: Context) {
                 console.log("Login successful for user: " + user)
                 const sessionId = crypto.randomBytes(32).toString("hex");
                 const date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 5) // 5 giorni 
-                reply.cookie("token", sessionId, {
+                reply.cookie("sessionId", sessionId, {
                     httpOnly: true,
-                    secure: true,
                     sameSite: "strict",
-                    maxAge : 1000 * 60 * 60 * 24 * 5    
+                    maxAge: 1000 * 60 * 60 * 24 * 5
                 })
-                reply.send({ redirect: "../homePage.html" })
-               
+
                 await pool.query(
                     'INSERT INTO sessions (id, user_id, expires_at)  VALUES (?, ?, ?)',
                     [
@@ -39,14 +37,14 @@ export default function (context: Context) {
                         exist[0].idUtente,
                         date
                     ]
-                );
-
+                )
+                return reply.send({ redirect: "/homePage.html" })
             } else {
                 console.log("Login failed for user: " + user)
                 reply.send({ success: false, message: "Incorrect password" })
             }
         }
-    
+
 
 
     })

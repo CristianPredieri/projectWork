@@ -5,11 +5,9 @@ import * as mariadb from "mariadb"
 import { join } from "path"
 import { Context } from "./modules/type"
 import { createSession } from "better-sse";
-
+import signup from "./route/signup"
 import standartRoute from "./route/standartRoute"
 import login from "./route/login"
-import loginPage from "./route/loginPage"
-import signupPage from "./route/signupPage"
 
 
 
@@ -27,38 +25,43 @@ const main = async () => {
         })
     }
 
-
+    app.register(fastifyStatic, {
+        root: join(__dirname, "../public"),
+    })
     await app.register(fastifyCookie)
-    await standartRoute(context)
-    await login(context)
-    await loginPage(context)
-    await signupPage(context)
 
     app.addHook("preHandler", async (req, reply) => {
-        const sessionId = req.cookies.sessionId;
-        
-        
-        if (req.url === "/loginPage" || req.url === "/signupPage") {
-            return
+        // 1. Sempre liberi — file statici
+        if (req.url.match(/\.(css|js|png|jpg|jpeg|svg|ico|json|webmanifest)$/)) return
+
+        const sessionId = req.cookies?.sessionId;
+
+        // 2. Route pubbliche — se hai sessione valida, vai a home
+        if (["/", "/index.html", "/loginPage.html", "/signupPage.html", "/login", "/signup"].includes(req.url)) {
+            if (!sessionId) return; // nessuna sessione → lascia passare normalmente
+
+            const sessions = await context.pool.query(
+                "SELECT * FROM sessions WHERE id = ?", [sessionId]
+            )
+            if (sessions.length > 0) return reply.redirect("/homePage.html"); // sessione valida → home
+            return; // sessione non valida → lascia passare
         }
 
-        if (req.url === "/homePage.html") {
-            if (!sessionId) {
-                return reply.redirect("../index.html");
-            }
-        }
+        // 3. Route protette — serve sessione valida
+        if (!sessionId) return reply.redirect("/index.html");
+
         const sessions = await context.pool.query(
-            "SELECT * FROM sessions WHERE id = ?",
-            [sessionId]
-        );
+            "SELECT * FROM sessions WHERE id = ?", [sessionId]
+        )
+        if (sessions.length === 0) return reply.redirect("/index.html");
 
-        if (sessions.length === 0) {
-            return reply.redirect("../login.html");
-        }
-        return reply.redirect("../homePage.html")
-
-
+        return; // sessione valida → lascia passare
     });
+
+    await standartRoute(context)
+    await login(context)
+    await signup(context)
+
 
     app.setErrorHandler(async (err, request, reply) => {
         console.log("Error occurred:", err)
@@ -68,9 +71,7 @@ const main = async () => {
         })
     })
 
-    app.register(fastifyStatic, {
-        root: join(__dirname, "../public"),
-    })
+
     app.listen({
         port: 3000,
         host: "0.0.0.0"

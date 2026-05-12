@@ -41,9 +41,13 @@
             cursor: pointer;
         }
 
-        #welcome {
-            margin-top: 15px;
-            color: black;
+        input[type='submit']:hover {
+            background-color: #ffb347;
+            color: #fff;
+        }
+
+        #feedback {
+            margin-top: 10px;
             font-weight: bold;
         }
     </style>
@@ -51,33 +55,91 @@
 
 <body>
     <h1>🎈 PopChat 🎈</h1>
-
-    <a href='../' >back</a>
+    <a href='../'>back</a>
 
     <div id='form'>
         <h2>Iscriviti!</h2>
-        <form method='POST'>
-            <input type='text' name='nome' placeholder='Nome' value='" . htmlspecialchars($nome) . "' required><br>
-
-            <input type='text' name='cognome' placeholder='Cognome' value='" . htmlspecialchars($cognome) . "'
+        <form id="signupForm">
+            <input id="nome" type='text' name='nome' placeholder='Nome' required><br>
+            <input id="cognome" type='text' name='cognome' placeholder='Cognome' required><br>
+            <input id="email" type='email' name='email' placeholder='Email' required><br>
+            <inout id="username" type="text" name = "username" placeholder = "Username" required></inout>
+            <input id="password" type='password' name='password' placeholder='Password' required><br>
+            <input id="controlloPassword" type='password' name='controlloPassword' placeholder='Conferma la password'
                 required><br>
-
-            <input type='tel' name='telefono' placeholder='Telefono' value='" . htmlspecialchars($telefono) . "'
-                required><br>
-
-            <input type='password' name='password' placeholder='Password' required><br>
-
-            <input type='submit' name='submit' value='Iscriviti'>
+            <input type='submit' value='Iscriviti'>
+            <h3 id="feedback"></h3>
         </form>
-
-        " . ($messaggio ? "<div id='welcome'>$messaggio</div>" : "") . "
     </div>
-
-    <div id='users'>
-        <h3>Utenti registrati (test)</h3>
-        $users
-    </div>
-
 </body>
 
+<script>
+    const form = document.getElementById('signupForm')
+
+    const rules = {
+        nome: { regex: /^[a-zA-ZÀ-ù\s]{2,30}$/, msg: "Nome non valido (solo lettere, 2-30 caratteri)" },
+        cognome: { regex: /^[a-zA-ZÀ-ù\s]{2,30}$/, msg: "Cognome non valido (solo lettere, 2-30 caratteri)" },
+        email: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, msg: "Email non valida" },
+        username: {regex : /^[a-zA-Z0-9._]{3,20}$/ , msg : "Username non valido (solo lettere, numeri, '-' e '.')"},
+        password: {
+            regex: /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,}$/,
+            msg: "La password deve avere almeno 8 caratteri, una maiuscola, un numero e un carattere speciale"
+            }    }
+
+    function setError(fieldId) {
+        const el = document.getElementById(fieldId)
+        el.style.borderColor = "red"
+        el.addEventListener('input', () => {
+            el.style.borderColor = ""
+        }, { once: true })
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const formData = new FormData(form)
+        const data = Object.fromEntries(formData.entries())
+        const feedback = document.getElementById('feedback')
+
+        // Validazione regex — segna TUTTI i campi sbagliati
+        const errors = []
+        for (const [field, rule] of Object.entries(rules)) {
+            if (!rule.regex.test(data[field])) {
+                errors.push({ field, msg: rule.msg })
+                setError(field)
+            }
+        }
+
+        if (errors.length > 0) {
+            feedback.textContent = errors[0].msg  // mostra il messaggio del primo errore
+            feedback.style.color = "red"
+            document.getElementById(errors[0].field).focus()  // focus sul primo campo sbagliato
+            return
+        }
+
+        // Controllo conferma password
+        if (data.password !== data.controlloPassword) {
+            feedback.textContent = "Le password non coincidono"
+            feedback.style.color = "red"
+            setError('password')
+            setError('controlloPassword')
+            document.getElementById('password').focus()
+            return
+        }
+
+        await fetch('/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.redirect) {
+                    window.location.href = res.redirect
+                } else {
+                    feedback.textContent = res.message || "Errore durante la registrazione"
+                    feedback.style.color = "red"
+                }
+            })
+    })
+</script>
 </html>

@@ -1,0 +1,507 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top,
+            #ff9ecb 10%,
+            #ff5f9e 35%,
+            #ff3f72 70%,
+            #1a0010 100%);
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    padding: 18px;
+    display: flex;
+    gap: 18px;
+}
+
+#sidebar {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 32px;
+    overflow: hidden;
+
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.16),
+            rgba(255, 255, 255, 0.05));
+
+    backdrop-filter: blur(16px);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 0 20px rgba(255, 105, 180, 0.45),
+        0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+#sidebarTop {
+    padding: 22px;
+}
+
+#topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+#logoArea {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+#logo {
+    width: 72px;
+    flex-shrink: 0;
+    /* =l'elemento non si può rimpiccolire */
+    animation: floatLogo 4s ease-in-out infinite;
+    filter:
+        drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes floatLogo {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+#logoArea h2 {
+    color: white;
+    font-size: 24px;
+}
+
+#logoArea p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+
+#searchBar {
+    padding: 0 18px 18px 18px;
+}
+
+#searchBar input {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 16px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+#userList {
+
+    flex: 1;
+    /* sostanzialmente fa in modo che occupi tutto lo spazio rimasto */
+    overflow-y: auto;
+    /* se il contenuto supera l’altezza mostra la scrollbar */
+    padding: 0 14px 14px 14px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 22px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.9);
+    transition: 0.2s;
+    box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.user:hover {
+    transform: translateY(-2px) scale(1.01);
+    background: #fff0f6;
+    box-shadow:
+        0 14px 26px rgba(255, 92, 151, 0.18);
+}
+
+.avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    /* tutto quello che esce fuori dal contenitore viene tagliato e non si vede */
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* riempe completamente il contenitore senza deformarti */
+}
+
+.userInfo h4 {
+    color: #2d2d2d;
+    margin-bottom: 3px;
+}
+
+.userInfo p {
+    color: #777;
+    font-size: 13px;
+}
+
+
+#chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: 32px;
+    overflow: hidden;
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.12),
+            rgba(255, 255, 255, 0.04));
+
+    backdrop-filter: blur(16px);
+    border: 3px solid rgba(255, 255, 255, 0.18);
+    box-shadow:
+        0 0 20px rgba(255, 105, 180, 0.3),
+        0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+
+#chatHeader {
+    padding: 20px 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    background:
+        linear-gradient(90deg,
+            #c8b6ff,
+            #e7dcff);
+
+    color: #2d1f3f;
+
+    border-bottom:
+        2px solid rgba(255, 255, 255, 0.2);
+}
+
+#chatHeaderInfo h3 {
+    font-size: 22px;
+}
+
+#chatHeaderInfo p {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+#backBtn {
+    cursor: pointer;
+    display: none;
+    font-size: 20px;
+}
+
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.message {
+    max-width: 340px;
+    padding: 14px 18px;
+    border-radius: 22px;
+    font-size: 15px;
+    animation: fadeIn 0.25s ease;
+}
+
+.received {
+
+    align-self: flex-start;
+
+    background:
+        linear-gradient(135deg,
+            #fff3b8,
+            #ffe49a);
+
+    color: #5a4300;
+
+    border-bottom-left-radius: 8px;
+
+    box-shadow:
+        0 8px 16px rgba(255, 228, 154, 0.28);
+}
+
+.sent {
+
+    align-self: flex-end;
+
+    background:
+        linear-gradient(135deg,
+            #8edfff,
+            #bcefff);
+
+    color: #163547;
+
+    border-bottom-right-radius: 8px;
+
+    box-shadow:
+        0 8px 16px rgba(142, 223, 255, 0.28);
+}
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+
+#inputBar {
+    display: flex;
+    gap: 12px;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border-top:
+        2px solid rgba(255, 255, 255, 0.08);
+}
+
+#inputBar input {
+    flex: 1;
+    padding: 14px 16px;
+    border: none;
+    border-radius: 18px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+#inputBar input:focus {
+
+    transform: scale(1.01);
+
+    box-shadow:
+        0 0 0 4px rgba(255, 255, 255, 0.25);
+}
+
+#inputBar button {
+    width: 56px;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+
+    background:
+        linear-gradient(to bottom,
+            #ffe66d,
+            #ffbf3f);
+
+    box-shadow:
+        0 5px 0 #d98a00,
+        0 10px 18px rgba(0, 0, 0, 0.2);
+
+    transition: 0.15s;
+}
+
+#inputBar button:hover {
+    transform: translateY(-2px);
+}
+
+#inputBar button:active {
+    transform: translateY(3px);
+    box-shadow:
+        0 2px 0 #d98a00;
+}
+
+
+@media (max-width: 768px) {
+
+    #app {
+        padding: 10px;
+    }
+
+    #sidebar {
+        width: 100%;
+    }
+
+    #chat {
+        width: 100%;
+        display: none;
+    }
+
+    #chat.active {
+        display: flex;
+    }
+
+    #sidebar.hidden {
+        display: none;
+    }
+
+    #backBtn {
+        display: inline;
+    }
+}
+
+
+.menu {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.menu-icon {
+
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
+    border-radius: 16px;
+
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.16),
+            rgba(255, 255, 255, 0.06));
+
+    border:
+        2px solid rgba(255, 255, 255, 0.12);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.2);
+
+    transition: 0.2s;
+}
+
+.menu-icon:hover {
+
+    transform: translateY(-2px);
+
+    background:
+        rgba(255, 255, 255, 0.18);
+}
+
+
+.menu-list {
+
+    position: absolute;
+    top: 62px;
+    right: 0;
+    width: 220px;
+    list-style: none;
+    padding: 10px;
+    border-radius: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: 0.25s ease;
+
+    background:
+        linear-gradient(145deg,
+            rgba(35, 15, 35, 0.96),
+            rgba(60, 20, 60, 0.92));
+
+    border:
+        2px solid rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.35);
+
+    z-index: 999;
+}
+
+.menu-list li {
+    margin-bottom: 6px;
+}
+
+.menu-list li:last-child {
+    margin-bottom: 0;
+}
+
+.menu-list a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 16px;
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.menu-list a:hover {
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    transform: translateX(4px);
+}
+
+
+.menu-toggle:checked+.menu-icon+.menu-list {
+    /* se il checkbox è attivo allora mi mostra il menu */
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0px);
+}
+
+#searchInput:focus {
+    transform: scale(1.01);
+}
+
+@media (max-width: 768px) {
+
+    #app {
+        padding: 0;
+        gap: 0;
+    }
+
+    #sidebar,
+    #chat {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+
+    body {
+        overflow: hidden;
+    }
+}

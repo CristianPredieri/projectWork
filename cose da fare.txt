@@ -1,2 +1,0 @@
-settare i cookie, e iniziare ad utilizzarlo come verify per quando si connette tramite sse, dopodichè si deve gestire l'sse e la questione degli eventi meglio.
-!!!!

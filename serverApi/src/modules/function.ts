@@ -2,5 +2,5 @@ export async function executeQuery(query: string, params: any[] = [],pool: impor
     const conn = await pool.getConnection()
     const rows = await conn.query(query, params)
     conn.release()
-    return rows    
+    return rows
 }

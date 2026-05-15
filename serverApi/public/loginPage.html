@@ -1,130 +1,398 @@
+<!doctype html>
 <html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
     <title>PopChat - Login</title>
 
-    <link rel='manifest' href='manifest.json'>
+    <link rel="manifest" href="manifest.json" />
 
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('Service Worker registrato'))
-                .catch(err => console.log(err));
-        }
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker registrato"))
+          .catch((err) => console.log(err));
+      }
     </script>
 
     <style>
-        body {
-            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
-            background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+
+        height: 100vh;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        overflow: hidden;
+
+        background: radial-gradient(
+          circle at top,
+          #ff9ecb 10%,
+          #ff5f9e 35%,
+          #ff3f72 70%,
+          #1a0010 100%
+        );
+      }
+
+      .container {
+        width: min(92vw, 460px);
+
+        padding: 22px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        position: relative;
+        z-index: 2;
+
+        border-radius: 32px;
+
+        overflow: hidden;
+
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.16),
+          rgba(255, 255, 255, 0.05)
+        );
+
+        backdrop-filter: blur(16px);
+
+        border: 4px solid rgba(255, 255, 255, 0.25);
+
+        box-shadow:
+          0 0 20px rgba(255, 105, 180, 0.55),
+          0 0 50px rgba(255, 0, 120, 0.25),
+          0 30px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      .container::before {
+        content: "";
+
+        position: absolute;
+
+        top: -50%;
+        left: -50%;
+
+        width: 200%;
+        height: 200%;
+
+        /* colore striscia */
+        background: linear-gradient(
+          120deg,
+          transparent 35%,
+          rgba(255, 255, 255, 0.18) 50%,
+          transparent 65%
+        );
+
+        transform: rotate(25deg);
+
+        animation: shine 7s linear infinite;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%) rotate(25deg);
         }
 
-        h1 {
-            margin-top: 40px;
-            color: #fff;
-            text-shadow: 2px 2px #ff5f6d;
+        100% {
+          transform: translateX(100%) rotate(25deg);
+        }
+      }
+
+      .logoArea {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 18px;
+        z-index: 2;
+      }
+
+      .mascot {
+        width: min(100%, 260px);
+
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+
+        animation: mascotFloat 4s ease-in-out infinite;
+      }
+
+      @keyframes mascotFloat {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+
+        50% {
+          transform: translateY(-24px);
+        }
+      }
+
+      #form {
+        width: 100%;
+        padding: 24px;
+        border-radius: 28px;
+        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.15);
+        border: 3px solid rgba(255, 255, 255, 0.25);
+
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
+
+        text-align: center;
+        z-index: 2;
+      }
+
+      #form h2 {
+        color: white;
+        margin-bottom: 18px;
+        font-size: 28px;
+      }
+
+      input {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 16px;
+        border: none;
+        border-radius: 16px;
+        font-size: 16px;
+        background: white;
+
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+        transition: 0.2s;
+      }
+
+      input:focus {
+        outline: none;
+        transform: scale(1.01);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+      }
+
+      input[type="submit"] {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+        color: #8b3b00;
+        background: linear-gradient(to bottom, #ffe66d, #ffbf3f);
+
+        box-shadow:
+          0 5px 0 #d98a00,
+          0 10px 18px rgba(0, 0, 0, 0.2);
+
+        transition: 0.15s;
+      }
+
+      input[type="submit"]:hover {
+        transform: translateY(-2px);
+      }
+
+      input[type="submit"]:active {
+        transform: translateY(3px);
+
+        box-shadow: 0 2px 0 #d98a00;
+      }
+
+      #badLogin {
+        color: #ff2020;
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
+
+      .back {
+        margin-top: 14px;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        opacity: 0.85;
+        transition: 0.2s;
+        z-index: 2;
+      }
+
+      .back:hover {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      /* LAPTOP */
+
+      @media (max-height: 820px) {
+        .mascot {
+          width: 210px;
         }
 
         #form {
-            margin-top: 30px;
-            background-color: #ff8b94;
-            padding: 25px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            text-align: center;
+          padding: 20px;
+        }
+
+        #form h2 {
+          font-size: 24px;
         }
 
         input {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 15px;
-            border: 2px solid #fff;
-            font-size: 16px;
+          padding: 12px;
+          margin-bottom: 14px;
+        }
+      }
+
+      /* MOBILE */
+
+      @media (max-width: 500px) {
+        .container {
+          width: 95vw;
+          padding: 18px;
+          border-radius: 24px;
         }
 
-        input[type='submit'] {
-            background-color: #ffde59;
-            font-weight: bold;
-            cursor: pointer;
+        .mascot {
+          width: 190px;
         }
 
-        input[type='submit']:hover {
-            background-color: #ffb347;
-            color: #fff;
+        #form {
+          padding: 20px;
         }
 
-        #messaggio {
-            margin-top: 10px;
-            color: #fff;
-            font-weight: bold;
+        #form h2 {
+          font-size: 24px;
         }
+      }
+
+      .psw-wrapper {
+        position: relative;
+
+        margin: 0 auto 15px;
+      }
+
+      .psw-wrapper input {
+        width: 100%;
+        margin-bottom: 0;
+        box-sizing: border-box;
+      }
+
+      .psw-wrapper button {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <h1>🎈 PopChat 🎈</h1>
-    <a href='../'>back</a>
-    <div id='form'>
+  <body>
+    <div class="container">
+      <div class="logoArea">
+        <img class="mascot" src="icone/icona2.png" />
+      </div>
+
+      <div id="form">
         <h2>Accedi</h2>
 
-        <form method='POST'  id="loginForm">
-            <h2 id="badLogin"></h2>
-            <input id="userTag" type='text' name='userTag' placeholder='Email o Username'
-                required><br>
+        <form method="POST" id="loginForm">
+          <h3 id="badLogin"></h3>
 
-            <input  id="psw" type='password' name='password' placeholder='Password' required><br>
+          <input
+            id="userTag"
+            type="text"
+            name="userTag"
+            placeholder="Email o Username"
+            required
+          />
 
-            <input type='submit' name='submit' value='Accedi'>
+          <div class="psw-wrapper">
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+            <button type="button" onclick="togglePsw('password', this)">
+              🐵
+            </button>
+          </div>
+
+          <input type="submit" value="Accedi" />
         </form>
+      </div>
 
+      <a class="back" href="/index.html"> ← Torna indietro </a>
     </div>
-</body>
+  </body>
 
-<script>
-      const form = document.getElementById('loginForm')
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault() // Impedisce il comportamento predefinito del form
-            const formData = new FormData(form)
-            const data = Object.fromEntries(formData.entries()) // Converte i dati del form in un oggetto
+  <script>
+    function togglePsw(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈";
+      } else {
+        input.type = "password";
+        btn.textContent = "🐵";
+      }
+    }
 
+    const badLogin = document.querySelector("#badLogin");
+    const userTag = document.querySelector("#userTag");
+    const psw = document.querySelector("#password"); // ← fix: era #psw
 
-            await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-            .then(res => {
-                if (res.redirect) {
-                    window.location.href = res.redirect;
-                } else {
-                    document.getElementById('badLogin').textContent = "Credenziali errate, riprova!";
-                    document.getElementById('badLogin').style.color = "red";
-                    document.getElementById('userTag').value = "";
-                    document.getElementById('psw').value = "";
-                    document.getElementById('userTag').focus();
-                    document.getElementById("userTag").style.borderColor = "red";
-                    document.getElementById("psw").style.borderColor = "red";
+    const form = document.getElementById("loginForm");
 
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-                    document.getElementById("psw").addEventListener('input', () => {
-                        document.getElementById("psw").style.borderColor = "";
-                    })
-                    document.getElementById("userTag").addEventListener('input', () => {
-                        document.getElementById("userTag").style.borderColor = "";
-                    })
-                }
-            })
-        })
-</script>
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const res = await response.json();
+
+        if (res.redirect) {
+          window.location.href = res.redirect;
+        } else {
+          badLogin.textContent = res.message || "Credenziali errate!"; // ← fix: era .text()
+
+          userTag.value = ""; // ← fix: era .val()
+          psw.value = ""; // ← fix: era .val()
+
+          userTag.focus();
+
+          userTag.style.border = "3px solid red"; // ← fix: era .css()
+          psw.style.border = "3px solid red"; // ← fix: era .css()
+        }
+      } catch (err) {
+        badLogin.textContent = "Errore di connessione"; // ← fix: era .text()
+        console.error(err);
+      }
+    });
+
+    userTag.addEventListener("input", () => {
+      userTag.style.borderColor = "";
+    });
+
+    psw.addEventListener("input", () => {
+      psw.style.borderColor = "";
+    });
+  </script>
 </html>

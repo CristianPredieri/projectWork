@@ -8,8 +8,10 @@ import { createSession } from "better-sse";
 import signup from "./route/signup"
 import standartRoute from "./route/standartRoute"
 import login from "./route/login"
-
-
+import { encryptMessage } from "./modules/crypto"
+import { decryptMessage } from "./modules/crypto"
+import checkSession from "./route/check-session"
+import { executeQuery } from "./modules/function"
 
 const main = async () => {
     const app = fastify()
@@ -17,7 +19,7 @@ const main = async () => {
     const context: Context = {
         app: app,
         pool: await mariadb.createPool({
-            port: 3500,
+            port: 3306,
             host: 'localhost',
             user: 'root',
             password: '',
@@ -31,33 +33,29 @@ const main = async () => {
     await app.register(fastifyCookie)
 
     app.addHook("preHandler", async (req, reply) => {
-        // 1. Sempre liberi — file statici
-        if (req.url.match(/\.(css|js|png|jpg|jpeg|svg|ico|json|webmanifest)$/)) return
+        // file statici → sempre liberi
+        if (req.url.match(/\.(css|js|png|jpg|jpeg|svg|ico|json|webmanifest|html)$/)) return
 
         const sessionId = req.cookies?.sessionId;
 
-        // 2. Route pubbliche — se hai sessione valida, vai a home
-        if (["/", "/index.html", "/loginPage.html", "/signupPage.html", "/login", "/signup"].includes(req.url)) {
-            if (!sessionId) return; // nessuna sessione → lascia passare normalmente
-
-            const sessions = await context.pool.query(
-                "SELECT * FROM sessions WHERE id = ?", [sessionId]
+        // route pubbliche API
+        if (["/", "/login", "/signup", "/check-session"].includes(req.url)) {
+            if (!sessionId) return;
+            const sessions = await executeQuery(
+                "SELECT * FROM sessions WHERE id = ?", [sessionId], context.pool
             )
-            if (sessions.length > 0) return reply.redirect("/homePage.html"); // sessione valida → home
-            return; // sessione non valida → lascia passare
+            if (sessions.length > 0) return reply.redirect("/homePage.html");
+            return;
         }
 
-        // 3. Route protette — serve sessione valida
+        // route protette API
         if (!sessionId) return reply.redirect("/index.html");
-
-        const sessions = await context.pool.query(
-            "SELECT * FROM sessions WHERE id = ?", [sessionId]
+        const sessions = await executeQuery(
+            "SELECT * FROM sessions WHERE id = ?", [sessionId], context.pool
         )
         if (sessions.length === 0) return reply.redirect("/index.html");
-
-        return; // sessione valida → lascia passare
-    });
-
+    })
+    await checkSession(context)
     await standartRoute(context)
     await login(context)
     await signup(context)

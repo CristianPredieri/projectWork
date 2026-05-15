@@ -1,23 +1,155 @@
-<html>
-    <head>
-        <title>PopChat</title>
-    </head>
-    <body>
-        <h1>🎈 PopChat 🎈</h1>
-        <p>Welcome to PopChat!</p>
-    </body>
-    
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<script> 
- let channel = new EventSource("/connSocket")
- channel.onmessage = (event) => {
-     const data = JSON.parse(event.data)
+    <title>PopChat</title>
 
- }
- 
- channel.onerror = (err) => {
-    console.error("SSE error:", err)
-}
-</script>
+    <link rel="stylesheet" href="homePage.css" />
+  </head>
 
+  <body>
+    <div id="app">
+      <div id="sidebar">
+        <div id="sidebarTop">
+          <div id="topBar">
+            <div id="logoArea">
+              <img src="icone/icona2.png" id="logo" />
+
+              <div>
+                <h2>POP CHAT</h2>
+              </div>
+            </div>
+
+            <!-- questo l'ho preso dal sito online cyber qualcosa -->
+
+            <nav class="menu">
+              <input type="checkbox" id="menu-toggle" class="menu-toggle" />
+
+              <label for="menu-toggle" class="menu-icon"> ☰ </label>
+
+              <ul class="menu-list">
+                <li><a href="#">🏠 Home</a></li>
+
+                <li><a href="#">💬 Chat</a></li>
+
+                <li><a href="#">⚙️ Impostazioni</a></li>
+
+                <li><a href="#">🚪 Logout</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div id="searchBar">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Cerca conversazione..."
+          />
+        </div>
+
+        <div id="userList">
+          <div class="user" onclick="openChat('Mario Rossi')">
+            <div class="avatar">
+              <img src="icone/defaultUser.png" alt="" />
+            </div>
+
+            <div class="userInfo">
+              <h4>Mario Rossi</h4>
+
+              <p>Online ora</p>
+            </div>
+          </div>
+
+          <div class="user" onclick="openChat('Luca Bianchi')">
+            <div class="avatar">
+              <img src="icone/defaultUser.png" alt="" />
+            </div>
+
+            <div class="userInfo">
+              <h4>Luca Bianchi</h4>
+
+              <p>Ti ha inviato una foto</p>
+            </div>
+          </div>
+
+          <div class="user" onclick="openChat('Anna Verdi')">
+            <div class="avatar">
+              <img src="icone/defaultUser.png" alt="" />
+            </div>
+
+            <div class="userInfo">
+              <h4>Anna Verdi</h4>
+
+              <p>Hey 👋</p>
+            </div>
+          </div>
+
+          <div class="user" onclick="openChat('Giulia Neri')">
+            <div class="avatar">
+              <img src="icone/defaultUser.png" alt="" />
+            </div>
+
+            <div class="userInfo">
+              <h4>Giulia Neri</h4>
+
+              <p>Ci sentiamo dopo!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chat">
+        <div id="chatHeader">
+          <span onclick="backToList()" id="backBtn"> ⬅ </span>
+
+          <div id="chatHeaderInfo">
+            <h3 id="chatTitle">POP CHAT</h3>
+
+            <p>Online</p>
+          </div>
+        </div>
+
+        <div id="messages">
+          <div class="message received">WALLABY</div>
+
+          <div class="message sent">6767676767676767676767</div>
+
+          <div class="message received">XD</div>
+        </div>
+
+        <div id="inputBar">
+          <input type="text" placeholder="Scrivi un messaggio..." />
+
+          <button>➜</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (async () => {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        if (!data.valid) window.location.href = "/index.html";
+      })();
+
+      function openChat(name) {
+        document.getElementById("chatTitle").innerText = name;
+
+        if (window.innerWidth <= 768) {
+          document.getElementById("sidebar").classList.add("hidden");
+
+          document.getElementById("chat").classList.add("active");
+        }
+      }
+
+      function backToList() {
+        document.getElementById("sidebar").classList.remove("hidden");
+
+        document.getElementById("chat").classList.remove("active");
+      }
+    </script>
+  </body>
 </html>

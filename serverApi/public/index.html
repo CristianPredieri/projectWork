@@ -1,73 +1,49 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="it">
 
 <head>
 
-    <!-- questa parte l'ha fatta chat per creare la pwa siccome ancora non è
-        una vera app ho preferito fare una pwa che è un misto ed è per cose + piccole
-        devo rivderla perchè alla fine mi sa che è meglio fare un' app store -->
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log("Service Worker registrato"))
-                .catch(err => console.log("Service Worker fallito:", err));
-        }
-    </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FF59FF">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log("Service Worker registrato"))
-                .catch(err => console.log("Service Worker fallito:", err));
-        }
-    </script>
-
-
-    <meta charset="UTF-8">
-    <title>PopChat</title>
-
-    <!-- mobile responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>PopChat - Sign Up</title>
 
     <link rel="stylesheet" href="common.css">
-    <link rel="stylesheet" href="index.css">
+
 </head>
 
-<body class="bg-gradient">
+<!-- separa email e username -->
 
-    <!-- CARD: mi piaceva l'idea di fare una card come log in e sign up -->
-    <div class="content container d-flex flex-column justify-content-between align-items-center">
+<body>
 
-        <div class="row w-100">
-            <header class="mt-3 text-center">
-                <h1 class="fw-bold">🎈 PopChat 🎈</h1>
-            </header>
+    <div class="container">
+
+        <div class="logoArea">
+
+            <img id="logoIndex" src="icone/icona2.png">
+
         </div>
 
-        <div class="row w-100 mt-4">
-            <main class="d-grid gap-3 col-12 col-sm-8 col-md-6 mx-auto text-center">
-                <button class="btn btn-lg btn-d" onclick="location.href='/loginPage.html'">
-                    Log In
-                </button>
-                <button class="btn btn-lg btn-signup" onclick="location.href='/signupPage.html'">
-                    Sign Up
-                </button>
-            </main>
+        <div id="scelta">
+                <button class="card" id="loginCard" onclick="loginPage()">Log In</button>
+
+                <button class="card" id="signupCard" onclick="signupPage()">Sign Up</button>
         </div>
 
-        <div class="row w-100 mt-4">
-            <footer class="mb-2 text-muted small text-center">
-                &copy; 2024 PopChat Inc.
-            </footer>
         </div>
 
     </div>
+    <script>
+        function loginPage() {
+            window.location.href = "loginPage.html";
+        }
+
+        function signupPage() {
+            window.location.href = "signup.html";
+        }
+    </script>
+
 </body>
+
+
 
 </html>

@@ -5,19 +5,7 @@
 
     <title>PopChat - Login</title>
 
-    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="common.css" />
-
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("service-worker.js")
-          .then(() => console.log("Service Worker registrato"))
-          .catch((err) => console.log(err));
-      }
-    </script>
-
-   
   </head>
 
   <body>
@@ -30,8 +18,6 @@
         <h2>Accedi</h2>
 
         <form method="POST" id="loginForm">
-          <h3 id="badLogin"></h3>
-
           <input
             id="userTag"
             type="text"
@@ -52,6 +38,7 @@
               🐵
             </button>
           </div>
+          <h3 id="badLogin"></h3>
 
           <input type="submit" value="Accedi" />
         </form>
@@ -75,7 +62,7 @@
 
     const badLogin = document.querySelector("#badLogin");
     const userTag = document.querySelector("#userTag");
-    const psw = document.querySelector("#password"); // ← fix: era #psw
+    const psw = document.querySelector("#password");
 
     const form = document.getElementById("loginForm");
 

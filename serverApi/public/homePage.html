@@ -6,7 +6,7 @@
 
     <title>PopChat</title>
 
-    <link rel="stylesheet" href="homePage.css" />
+    <link rel="stylesheet" href="styleHomePage.css" />
   </head>
 
   <body>
@@ -121,9 +121,13 @@
         </div>
 
         <div id="inputBar">
-          <input type="text" placeholder="Scrivi un messaggio..." />
+          <input
+            type="text"
+            id="inviomessaggio"
+            placeholder="Scrivi un messaggio..."
+          />
 
-          <button>➜</button>
+          <button onclick="aggiungimessaggio()" id="inviaMsg">➜</button>
         </div>
       </div>
     </div>
@@ -134,13 +138,10 @@
         const data = await res.json();
         if (!data.valid) window.location.href = "/index.html";
       })();
-
       const eventSource = new EventSource("/sse");
-
       eventSource.addEventListener("nuovo-messaggio", (e) => {
         const messaggio = JSON.parse(e.data);
-        console.log("Nuovo messaggio:", messaggio);
-        // aggiungere aggionramento nuovo messaggio
+        console.log("Nuovo messaggio:", messaggio); // aggiungere aggionramento nuovo messaggio
       });
 
       function openChat(name) {
@@ -157,6 +158,16 @@
         document.getElementById("sidebar").classList.remove("hidden");
 
         document.getElementById("chat").classList.remove("active");
+      }
+
+      messaggio = document.getElementById("inviomessaggio").value();
+
+      function aggiungimessaggio() {
+        if (messaggio != "" && messagio != " ") {
+          /* aggiungere il messaggio alla schermata della chat e rendere
+                   quella sezione in modo scorrevole quando aumentano i msg
+                   sarebbe carino anche aggiungere le date e l'ora dei msg */
+        }
       }
     </script>
   </body>

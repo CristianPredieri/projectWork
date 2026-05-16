@@ -12,6 +12,8 @@ import { encryptMessage } from "./modules/crypto"
 import { decryptMessage } from "./modules/crypto"
 import checkSession from "./route/check-session"
 import { executeQuery } from "./modules/function"
+import sse from "./route/sse"
+
 
 const main = async () => {
     const app = fastify()
@@ -24,7 +26,8 @@ const main = async () => {
             user: 'root',
             password: '',
             database: 'projectwork'
-        })
+        }),
+         sessions: new Map()
     }
 
     app.register(fastifyStatic, {
@@ -59,6 +62,7 @@ const main = async () => {
     await standartRoute(context)
     await login(context)
     await signup(context)
+    await sse(context)
 
 
     app.setErrorHandler(async (err, request, reply) => {

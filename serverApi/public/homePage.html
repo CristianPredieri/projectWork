@@ -135,6 +135,14 @@
         if (!data.valid) window.location.href = "/index.html";
       })();
 
+      const eventSource = new EventSource("/sse");
+
+      eventSource.addEventListener("nuovo-messaggio", (e) => {
+        const messaggio = JSON.parse(e.data);
+        console.log("Nuovo messaggio:", messaggio);
+        // aggiungere aggionramento nuovo messaggio
+      });
+
       function openChat(name) {
         document.getElementById("chatTitle").innerText = name;
 

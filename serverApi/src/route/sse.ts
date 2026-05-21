@@ -1,35 +1,36 @@
 import { Context } from "../modules/type"
 import { createSession } from "better-sse"
 
+// Route per Server-Sent Events: connessione WebSocket per messaggi in tempo reale
 export default function (context: Context) {
+  const app = context.app
+  const pool = context.pool
 
+  // GET /sse - Stabilisce una connessione SSE per ricevere messaggi in tempo reale
+  app.get("/sse", async (req: any, reply: any) => {
+    const sessionId = req.cookies?.sessionId
+    if (!sessionId) return reply.status(401).send({ message: "Non autorizzato" })
 
+    // Verifica che la sessione sia valida e non scaduta
+    const sessions = await pool.query(
+      "SELECT * FROM sessions WHERE id = ? AND expires_at > NOW()",
+      [sessionId]
+    )
+    if (sessions.length === 0) return reply.status(401).send({ message: "Sessione scaduta" })
 
-    const app = context.app
-    const pool = context.pool
+    const userId = String(sessions[0].user_id)
+    // "Hijack" la risposta HTTP per mantenere la connessione aperta
+    reply.hijack()
+    const session = await createSession(req.raw, reply.raw)
 
+    // Registra la sessione SSE nel contesto dell'app
+    context.sessions.set(userId, session)
+    console.log(`SSE connesso: utente ${userId}`)
 
-    app.get("/sse", async (req: any, reply: any) => {
-        const sessionId = req.cookies?.sessionId
-        if (!sessionId) return reply.status(401).send({ message: "Non autorizzato" })
-        const sessions = await pool.query(
-            "SELECT * FROM sessions WHERE id = ? AND expires_at > NOW()",
-            [sessionId]
-        )
-        if (sessions.length === 0) return reply.status(401).send({ message: "Sessione scaduta" })
-
-        const userId = String(sessions[0].user_id)
-
-        const session = await createSession(req.raw, reply.raw)
-
-        context.sessions.set(userId, session)
-
-        console.log(`SSE connesso: utente ${userId}`)
-
-
-        req.raw.on("close", () => {
-            context.sessions.delete(userId)
-            console.log(`SSE disconnesso: utente ${userId}`)
-        })
+    // Quando il client si disconnette, rimuovi la sessione
+    req.raw.on("close", () => {
+      context.sessions.delete(userId)
+      console.log(`SSE disconnesso: utente ${userId}`)
     })
+  })
 }

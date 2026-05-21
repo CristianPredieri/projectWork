@@ -3,172 +3,914 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>PopChat</title>
-
     <link rel="stylesheet" href="styleHomePage.css" />
   </head>
 
   <body>
     <div id="app">
+      <!-- ─── SIDEBAR ──────────────────────────────────────── -->
       <div id="sidebar">
         <div id="sidebarTop">
           <div id="topBar">
             <div id="logoArea">
               <img src="icone/icona2.png" id="logo" />
-
-              <div>
-                <h2>POP CHAT</h2>
-              </div>
+              <div><h2>POP CHAT</h2></div>
             </div>
-
-            <!-- questo l'ho preso dal sito online cyber qualcosa -->
-
             <nav class="menu">
               <input type="checkbox" id="menu-toggle" class="menu-toggle" />
-
-              <label for="menu-toggle" class="menu-icon"> ☰ </label>
-
+              <label for="menu-toggle" class="menu-icon">☰</label>
               <ul class="menu-list">
-                <li><a href="#">🏠 Home</a></li>
-
-                <li><a href="#">💬 Chat</a></li>
-
-                <li><a href="#">⚙️ Impostazioni</a></li>
-
-                <li><a href="#">🚪 Logout</a></li>
+                <li><a href="#" id="btnNuovaChat">✏️ Nuova Chat</a></li>
+                <li><a href="#" id="btnMenuLogout">🚪 Logout</a></li>
               </ul>
             </nav>
           </div>
         </div>
 
-        <div id="searchBar">
-          <input
-            id="searchInput"
-            type="text"
-            placeholder="Cerca conversazione..."
-          />
+        <div id="navTabs">
+          <button
+            class="navTab active"
+            id="tabChat"
+            onclick="mostraTab('chats')"
+          >
+            💬 Chat
+          </button>
+          <button
+            class="navTab"
+            id="tabContatti"
+            onclick="mostraTab('contatti')"
+          >
+            👥 Contatti
+          </button>
         </div>
 
-        <div id="userList">
-          <div class="user" onclick="openChat('Mario Rossi')">
-            <div class="avatar">
-              <img src="icone/defaultUser.png" alt="" />
-            </div>
-
-            <div class="userInfo">
-              <h4>Mario Rossi</h4>
-
-              <p>Online ora</p>
-            </div>
+        <div id="viewChats">
+          <div id="searchBar">
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Cerca conversazione..."
+            />
           </div>
-
-          <div class="user" onclick="openChat('Luca Bianchi')">
-            <div class="avatar">
-              <img src="icone/defaultUser.png" alt="" />
-            </div>
-
-            <div class="userInfo">
-              <h4>Luca Bianchi</h4>
-
-              <p>Ti ha inviato una foto</p>
-            </div>
+          <div id="userList">
+            <p class="emptyState">Caricamento...</p>
           </div>
+        </div>
 
-          <div class="user" onclick="openChat('Anna Verdi')">
-            <div class="avatar">
-              <img src="icone/defaultUser.png" alt="" />
-            </div>
-
-            <div class="userInfo">
-              <h4>Anna Verdi</h4>
-
-              <p>Hey 👋</p>
-            </div>
+        <div id="viewContatti">
+          <div id="contattiHeader">
+            <input
+              id="searchContatti"
+              type="text"
+              placeholder="Cerca nei contatti..."
+            />
+            <button id="btnAggiungiContatto" title="Aggiungi contatto">
+              +
+            </button>
           </div>
-
-          <div class="user" onclick="openChat('Giulia Neri')">
-            <div class="avatar">
-              <img src="icone/defaultUser.png" alt="" />
-            </div>
-
-            <div class="userInfo">
-              <h4>Giulia Neri</h4>
-
-              <p>Ci sentiamo dopo!</p>
-            </div>
+          <div id="contattiList">
+            <p class="emptyState">Caricamento...</p>
           </div>
         </div>
       </div>
 
+      <!-- ─── AREA CHAT ─────────────────────────────────────── -->
       <div id="chat">
-        <div id="chatHeader">
-          <span onclick="backToList()" id="backBtn"> ⬅ </span>
+        <div id="chatEmpty">
+          <span>🎈</span>
+          <p>Seleziona una chat per iniziare</p>
+        </div>
 
-          <div id="chatHeaderInfo">
-            <h3 id="chatTitle">POP CHAT</h3>
+        <div id="chatActive">
+          <div id="chatHeader">
+            <span onclick="backToList()" id="backBtn">⬅</span>
+            <div id="chatHeaderInfo">
+              <h3 id="chatTitle"></h3>
+              <p id="chatStatus">Online</p>
+            </div>
+            <!-- menu opzioni chat -->
+            <div class="chatMenu">
+              <input type="checkbox" id="chatMenu-toggle" class="menu-toggle" />
+              <label for="chatMenu-toggle" class="chatMenuIcon">⋮</label>
+              <ul class="chatMenuList" id="chatMenuList">
+                <li><a href="#" id="btnInfoChat">ℹ️ Info Chat</a></li>
+                <li id="liAggiungiMembro" style="display: none">
+                  <a href="#" id="btnAggiungiMembro">➕ Aggiungi membro</a>
+                </li>
+                <li>
+                  <a href="#" id="btnAbbandonaChat" class="danger"
+                    >🚪 Abbandona chat</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
 
-            <p>Online</p>
+          <div id="messages"></div>
+
+          <div id="inputBar">
+            <input
+              type="text"
+              id="inviomessaggio"
+              placeholder="Scrivi un messaggio..."
+            />
+            <button id="inviaMsg">➜</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div id="messages">
-          <div class="message received">WALLABY</div>
-
-          <div class="message sent">6767676767676767676767</div>
-
-          <div class="message received">XD</div>
+    <!-- ─── MODAL NUOVA CHAT ─────────────────────────────────── -->
+    <div id="modalOverlay">
+      <div id="modal">
+        <h3>✏️ Nuova Chat</h3>
+        <input
+          id="modalSearch"
+          type="text"
+          placeholder="Cerca username..."
+          autocomplete="off"
+        />
+        <div id="modalResults"></div>
+        <div id="selectedUsers"></div>
+        <input id="nomeGruppo" type="text" placeholder="Nome del gruppo..." />
+        <div id="modalButtons">
+          <button id="btnCancelModal">Annulla</button>
+          <button id="btnCreaChat">Crea Chat</button>
         </div>
+      </div>
+    </div>
 
-        <div id="inputBar">
-          <input
-            type="text"
-            id="inviomessaggio"
-            placeholder="Scrivi un messaggio..."
-          />
+    <!-- ─── MODAL AGGIUNGI CONTATTO ──────────────────────────── -->
+    <div id="modalAggiungiOverlay">
+      <div id="modalAggiungi">
+        <h3>👥 Aggiungi Contatto</h3>
+        <input
+          id="inputUsername"
+          type="text"
+          placeholder="Inserisci username..."
+          autocomplete="off"
+        />
+        <div id="modalAggiungiResult"></div>
+        <div id="feedbackAggiungi"></div>
+        <div id="aggiungiButtons">
+          <button id="btnCancelAggiungi">Annulla</button>
+          <button id="btnConfermaAggiungi">Aggiungi</button>
+        </div>
+      </div>
+    </div>
 
-          <button onclick="aggiungimessaggio()" id="inviaMsg">➜</button>
+    <!-- ─── MODAL INFO CHAT ──────────────────────────────────── -->
+    <div id="modalInfoOverlay">
+      <div id="modalInfo">
+        <h3 id="modalInfoTitolo">ℹ️ Info Chat</h3>
+        <div id="modalInfoPartecipanti"></div>
+        <div id="modalInfoButtons">
+          <button id="btnChiudiInfo">Chiudi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── MODAL AGGIUNGI MEMBRO ────────────────────────────── -->
+    <div id="modalMembroOverlay">
+      <div id="modalMembro">
+        <h3>➕ Aggiungi Membro</h3>
+        <input
+          id="inputMembro"
+          type="text"
+          placeholder="Inserisci username..."
+          autocomplete="off"
+        />
+        <div id="feedbackMembro"></div>
+        <div id="membroButtons">
+          <button id="btnCancelMembro">Annulla</button>
+          <button id="btnConfermaMembro">Aggiungi</button>
         </div>
       </div>
     </div>
 
     <script>
+      let chatCorrenteId = null;
+      let chatCorrenteIsGroup = false;
+      let chatCorrenteIsAdmin = false;
+      let myId = null;
+      let myUsername = null;
+      let selectedForChat = [];
+      let tuttiContatti = [];
+
+      // ─── INIT ─────────────────────────────────────────────
       (async () => {
+        console.log("Verifica sessione...");
         const res = await fetch("/check-session");
-        const data = await res.json();
-        if (!data.valid) window.location.href = "/index.html";
+        const text = await res.text();
+
+        const data = JSON.parse(text);
+
+        if (!data.valid) {
+          window.location.href = "/index.html";
+          return;
+        }
+
+        const meRes = await fetch("/whoami");
+        const me = await meRes.json();
+        myId = me.idUtente;
+        myUsername = me.username;
+
+        await caricaChats();
+        await caricaContatti();
       })();
+
+      // ─── SSE ──────────────────────────────────────────────
       const eventSource = new EventSource("/sse");
-      eventSource.addEventListener("nuovo-messaggio", (e) => {
-        const messaggio = JSON.parse(e.data);
-        console.log("Nuovo messaggio:", messaggio); // aggiungere aggionramento nuovo messaggio
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+      function inviaNotificaBrowser(titolo, testo, chatId) {
+        if (!("Notification" in window)) return;
+
+        if (Notification.permission !== "granted") {
+          console.log("Notifiche non consentite:", Notification.permission);
+          return;
+        }
+
+        if (
+          document.visibilityState === "visible" &&
+          Number(chatId) === Number(chatCorrenteId)
+        ) {
+          console.log("Notifica saltata: chat già aperta");
+          return;
+        }
+
+        const n = new Notification(titolo, {
+          body: testo,
+          icon: "/icone/icon-192.png",
+          tag: `chat-${chatId}`,
+        });
+
+        n.onclick = () => {
+          window.focus();
+          n.close();
+        };
+      }
+
+      eventSource.onerror = () => {
+        console.log("SSE disconnesso, riconnessione in corso...");
+      };
+
+      eventSource.addEventListener("nuovo-messaggio", async (e) => {
+        const msg = JSON.parse(e.data);
+
+        inviaNotificaBrowser(`@${msg.username}`, msg.content, msg.chatId);
+
+        if (Number(msg.chatId) === Number(chatCorrenteId)) {
+          await caricaMessaggi(chatCorrenteId);
+        }
+
+        await caricaChats();
       });
 
-      function openChat(name) {
-        document.getElementById("chatTitle").innerText = name;
+      eventSource.addEventListener("chat-eliminata", (e) => {
+        let data = JSON.parse(e.data);
+        document.querySelectorAll("#userList .user").forEach((el) => {
+          if (Number(el.dataset.chatId) === Number(data.chatId)) {
+            el.remove();
+          }
+        });
+
+        if (Number(data.chatId) === Number(chatCorrenteId)) {
+          backToList();
+          mostraNotifica(data.message || "Chat eliminata");
+        }
+      });
+      eventSource.addEventListener("chat-abbandonata", (e) => {
+        const data = JSON.parse(e.data);
+        document.querySelectorAll("#userList .user").forEach((el) => {
+          if (Number(el.dataset.chatId) === Number(data.chatId)) el.remove();
+        });
+        if (Number(data.chatId) === Number(chatCorrenteId)) {
+          backToList();
+          mostraNotifica(data.message || "Hai abbandonato il gruppo");
+        }
+      });
+      eventSource.addEventListener("removed-from-chat", (e) => {
+        let data = JSON.parse(e.data);
+        document.querySelectorAll("#userList .user").forEach((el) => {
+          if (Number(el.dataset.chatId) === Number(data.chatId)) {
+            el.remove();
+          }
+        });
+
+        if (Number(data.chatId) === Number(chatCorrenteId)) {
+          backToList();
+          mostraNotifica(
+            data.message || "Sei stato rimosso dalla chat " + data.nomeChat,
+          );
+        }
+      });
+
+      eventSource.addEventListener("nuovo-admin", (e) => {
+        let data = JSON.parse(e.data);
+
+        if (data.chatId == chatCorrenteId) {
+          chatCorrenteIsAdmin = true;
+          aggiornaMenuChat();
+          mostraNotifica("Sei il nuovo amministratore del gruppo! 👑");
+        }
+      });
+
+      // ─── NOTIFICA TOAST ───────────────────────────────────
+      function mostraNotifica(testo) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = testo;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // ─── TAB ──────────────────────────────────────────────
+      function mostraTab(tab) {
+        const isChat = tab === "chats";
+        document.getElementById("viewChats").style.display = isChat
+          ? "flex"
+          : "none";
+        document.getElementById("viewContatti").style.display = isChat
+          ? "none"
+          : "flex";
+        document.getElementById("tabChat").classList.toggle("active", isChat);
+        document
+          .getElementById("tabContatti")
+          .classList.toggle("active", !isChat);
+      }
+
+      // ─── CARICA CHAT ──────────────────────────────────────
+      async function caricaChats() {
+        const res = await fetch("/chats");
+
+        const data = await res.json();
+        const userList = document.getElementById("userList");
+        userList.innerHTML = "";
+        for (const c of data.chats) {
+          console.log(c.idChat, "unreadCount:", c.unreadCount); // ← aggiungi
+          const nome = c.is_group ? c.nomeChat : `${c.nome} ${c.cognome}`;
+        }
+        if (!data.chats || data.chats.length === 0) {
+          userList.innerHTML = `<p class="emptyState">Nessuna chat ancora.<br>Creane una! ✏️</p>`;
+          return;
+        }
+
+        for (const c of data.chats) {
+          const nome = c.is_group ? c.nomeChat : `${c.nome} ${c.cognome}`;
+          const anteprima = c.lastMessage || "Nessun messaggio";
+          const div = document.createElement("div");
+          div.className = "user";
+          div.dataset.chatId = c.idChat;
+
+          const ora = c.lastSentAt
+            ? new Date(c.lastSentAt).toLocaleTimeString("it-IT", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "";
+          const count = c.unreadCount > 5 ? "5+" : c.unreadCount;
+
+          const unread =
+            c.unreadCount > 0
+              ? `<span class="badgeUnread">${count}</span>`
+              : "";
+
+          div.innerHTML = `
+  <div class="avatar"><img src="icone/defaultUser.png" alt="" /></div>
+  <div class="userInfo">
+    <h4>${nome} ${c.is_group ? '<span class="badgeGruppo">gruppo</span>' : ""}</h4>
+    <p>${anteprima}</p>
+  </div>
+  <div class="chatMeta">
+    <span class="chatOra">${ora}</span>
+    ${unread}
+  </div>
+`;
+          div.onclick = () => apriChat(c.idChat, nome, !!c.is_group);
+          userList.appendChild(div);
+        }
+      }
+
+      // ─── APRI CHAT ────────────────────────────────────────
+      async function apriChat(chatId, nome, isGroup) {
+        chatCorrenteId = chatId;
+        chatCorrenteIsGroup = isGroup;
+        chatCorrenteIsAdmin = false;
+
+        document.getElementById("chatEmpty").style.display = "none";
+        document.getElementById("chatActive").style.display = "flex";
+        document.getElementById("chatTitle").innerText = nome;
+        document.getElementById("chatStatus").innerText = isGroup
+          ? "Gruppo"
+          : "Online";
+        document.getElementById("chatMenu-toggle").checked = false;
+
+        // carica info per sapere se sono admin
+        if (isGroup) {
+          const infoRes = await fetch(`/chat/${chatId}/info`);
+          const info = await infoRes.json();
+          const me = info.partecipanti?.find((p) => p.idUtente == myId);
+          chatCorrenteIsAdmin = me?.ruolo === "amministratore";
+        }
+
+        aggiornaMenuChat();
 
         if (window.innerWidth <= 768) {
           document.getElementById("sidebar").classList.add("hidden");
-
           document.getElementById("chat").classList.add("active");
         }
+
+        await caricaMessaggi(chatId);
+        document.querySelectorAll("#userList .user").forEach((el) => {
+          if (Number(el.dataset.chatId) === Number(chatId)) {
+            const badge = el.querySelector(".badgeUnread");
+            if (badge) badge.remove();
+          }
+        });
       }
 
+      // aggiorna visibilità opzioni menu chat
+      function aggiornaMenuChat() {
+        document.getElementById("liAggiungiMembro").style.display =
+          chatCorrenteIsGroup && chatCorrenteIsAdmin ? "block" : "none";
+      }
+
+      // ─── CARICA MESSAGGI ──────────────────────────────────
+      async function caricaMessaggi(chatId) {
+        const res = await fetch(`/chat/${chatId}/msg`);
+        const data = await res.json();
+        const messagesDiv = document.getElementById("messages");
+        messagesDiv.innerHTML = "";
+
+        if (!data.messages || data.messages.length === 0) {
+          messagesDiv.innerHTML = `<p class="emptyState">Nessun messaggio ancora 💬</p>`;
+          return;
+        }
+
+        for (const msg of data.messages) {
+          const tipo = msg.sender_id == myId ? "sent" : "received";
+          aggiungiMessaggioUI(
+            msg.content,
+            tipo,
+            tipo === "received" ? msg.username : null,
+            msg.sent_at,
+            msg.statusMsg,
+          );
+        }
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
+      // ─── AGGIUNGI MESSAGGIO UI ────────────────────────────
+      function aggiungiMessaggioUI(
+        content,
+        tipo,
+        username = null,
+        sent_at = null,
+        status = null,
+      ) {
+        const messagesDiv = document.getElementById("messages");
+        const vuoto = messagesDiv.querySelector(".emptyState");
+        if (vuoto) vuoto.remove();
+
+        const ora = sent_at
+          ? new Date(sent_at).toLocaleTimeString("it-IT", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : new Date().toLocaleTimeString("it-IT", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+        // spunte solo sui messaggi inviati da me
+        let spunta = "";
+        if (tipo === "sent") {
+          if (status === "letto")
+            spunta = `<span class="msgStatus read">✓✓</span>`;
+          else if (status === "consegnato")
+            spunta = `<span class="msgStatus delivered">✓✓</span>`;
+          else spunta = `<span class="msgStatus sent">✓</span>`;
+        }
+
+        const div = document.createElement("div");
+        div.className = `message ${tipo}`;
+        div.innerHTML =
+          (username ? `<span class="msgUsername">${username}</span>` : "") +
+          content +
+          `<span class="msgTime">${ora}${spunta}</span>`;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
+      // ─── INVIA MESSAGGIO ──────────────────────────────────
+      document.getElementById("inviaMsg").onclick = inviaMessaggio;
+      document
+        .getElementById("inviomessaggio")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") inviaMessaggio();
+        });
+
+      eventSource.addEventListener("messaggi-letti", (e) => {
+        console.log("messaggi-letti ricevuto:", e.data); // ← aggiungi
+        const data = JSON.parse(e.data);
+        if (Number(data.chatId) === Number(chatCorrenteId)) {
+          // aggiorna tutte le spunte dei messaggi sent a blu
+          document
+            .querySelectorAll(".message.sent .msgStatus")
+            .forEach((el) => {
+              el.className = "msgStatus read";
+              el.textContent = "✓✓";
+            });
+        }
+      });
+
+      async function inviaMessaggio() {
+        if (!chatCorrenteId) return;
+        const input = document.getElementById("inviomessaggio");
+        const content = input.value.trim();
+        if (!content) return;
+        input.value = "";
+        aggiungiMessaggioUI(content, "sent");
+        await fetch(`/chat/${chatCorrenteId}/msg`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content }),
+        });
+      }
+
+      // ─── BACK MOBILE ──────────────────────────────────────
       function backToList() {
         document.getElementById("sidebar").classList.remove("hidden");
-
         document.getElementById("chat").classList.remove("active");
+        document.getElementById("chatEmpty").style.display = "flex";
+        document.getElementById("chatActive").style.display = "none";
+        chatCorrenteId = null;
       }
 
-      messaggio = document.getElementById("inviomessaggio").value();
+      // ─── SEARCH CHAT ──────────────────────────────────────
+      document.getElementById("searchInput").addEventListener("input", (e) => {
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll("#userList .user").forEach((el) => {
+          const nome = el.querySelector("h4").innerText.toLowerCase();
+          el.style.display = nome.includes(q) ? "flex" : "none";
+        });
+      });
 
-      function aggiungimessaggio() {
-        if (messaggio != "" && messagio != " ") {
-          /* aggiungere il messaggio alla schermata della chat e rendere
-                   quella sezione in modo scorrevole quando aumentano i msg
-                   sarebbe carino anche aggiungere le date e l'ora dei msg */
+      // ─── LOGOUT ───────────────────────────────────────────
+      document.getElementById("btnMenuLogout").onclick = async (e) => {
+        e.preventDefault();
+        const res = await fetch("/logout", { method: "POST" });
+        const data = await res.json();
+        window.location.href = data.redirect;
+      };
+
+      // ─── INFO CHAT ────────────────────────────────────────
+      document.getElementById("btnInfoChat").onclick = async (e) => {
+        e.preventDefault();
+        document.getElementById("chatMenu-toggle").checked = false;
+        if (!chatCorrenteId) return;
+
+        const res = await fetch(`/chat/${chatCorrenteId}/info`);
+        const data = await res.json();
+
+        document.getElementById("modalInfoTitolo").textContent = data.chat
+          .is_group
+          ? `👥 ${data.chat.nomeChat}`
+          : "ℹ️ Info Chat";
+
+        const lista = document.getElementById("modalInfoPartecipanti");
+        lista.innerHTML = "";
+
+        for (const p of data.partecipanti) {
+          const div = document.createElement("div");
+          div.className = "infoPartecipante";
+          div.innerHTML = `
+                        <div class="avatar" style="width:40px;height:40px;flex-shrink:0;">
+                          <img src="icone/defaultUser.png" />
+                        </div>
+                        <div style="flex:1;">
+                          <b>${p.nome} ${p.cognome}</b> <span style="opacity:0.6;font-size:12px;">@${p.username}</span>
+                          ${p.ruolo === "amministratore" ? '<span class="badgeAdmin">admin</span>' : ""}
+                        </div>
+                        ${
+                          chatCorrenteIsAdmin && p.idUtente != myId
+                            ? `<button class="btnRimuovi" onclick="rimuoviMembro(${p.idUtente})">✕</button>`
+                            : ""
+                        }
+                      `;
+          lista.appendChild(div);
+        }
+
+        document.getElementById("modalInfoOverlay").classList.add("open");
+      };
+
+      document.getElementById("btnChiudiInfo").onclick = () => {
+        document.getElementById("modalInfoOverlay").classList.remove("open");
+      };
+
+      // ─── RIMUOVI MEMBRO ───────────────────────────────────
+      async function rimuoviMembro(userId) {
+        if (!confirm("Rimuovere questo membro dal gruppo?")) return;
+        const res = await fetch(`/chat/${chatCorrenteId}/members/${userId}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("modalInfoOverlay").classList.remove("open");
+          mostraNotifica("Membro rimosso");
         }
       }
+
+      // ─── AGGIUNGI MEMBRO ──────────────────────────────────
+      document.getElementById("btnAggiungiMembro").onclick = (e) => {
+        e.preventDefault();
+        document.getElementById("chatMenu-toggle").checked = false;
+        document.getElementById("inputMembro").value = "";
+        document.getElementById("feedbackMembro").textContent = "";
+        document.getElementById("modalMembroOverlay").classList.add("open");
+      };
+
+      document.getElementById("btnCancelMembro").onclick = () => {
+        document.getElementById("modalMembroOverlay").classList.remove("open");
+      };
+
+      document.getElementById("btnConfermaMembro").onclick = async () => {
+        const username = document.getElementById("inputMembro").value.trim();
+        const feedback = document.getElementById("feedbackMembro");
+
+        if (!username) {
+          feedback.textContent = "Inserisci un username";
+          feedback.style.color = "#ff6b6b";
+          return;
+        }
+
+        const res = await fetch(`/chat/${chatCorrenteId}/members`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          feedback.textContent = "Membro aggiunto! ✅";
+          feedback.style.color = "#6bffb8";
+          setTimeout(
+            () =>
+              document
+                .getElementById("modalMembroOverlay")
+                .classList.remove("open"),
+            1000,
+          );
+        } else {
+          feedback.textContent = data.message || "Errore";
+          feedback.style.color = "#ff6b6b";
+        }
+      };
+
+      // ─── ABBANDONA CHAT ───────────────────────────────────
+      document.getElementById("btnAbbandonaChat").onclick = async (e) => {
+        e.preventDefault();
+        document.getElementById("chatMenu-toggle").checked = false;
+        const conferma = confirm(
+          chatCorrenteIsGroup
+            ? "Vuoi abbandonare il gruppo?"
+            : "Vuoi eliminare questa chat?",
+        );
+        if (!conferma) return;
+
+        const res = await fetch(`/chat/${chatCorrenteId}/members/${myId}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          backToList();
+          await caricaChats();
+          mostraNotifica(data.message);
+        }
+      };
+
+      // ─── CARICA CONTATTI ──────────────────────────────────
+      async function caricaContatti() {
+        const res = await fetch("/contatti");
+        const data = await res.json();
+        tuttiContatti = data.contatti || [];
+        renderContatti(tuttiContatti);
+      }
+
+      function renderContatti(contatti) {
+        const list = document.getElementById("contattiList");
+        list.innerHTML = "";
+
+        if (contatti.length === 0) {
+          list.innerHTML = `<p class="emptyState">Nessun contatto ancora.<br>Aggiungine uno! +</p>`;
+          return;
+        }
+
+        for (const c of contatti) {
+          const div = document.createElement("div");
+          div.className = "user";
+          div.innerHTML = `
+                        <div class="avatar"><img src="icone/defaultUser.png" alt="" /></div>
+                        <div class="userInfo"><h4>${c.nome} ${c.cognome}</h4><p>@${c.username}</p></div>
+                      `;
+          div.onclick = () =>
+            apriChatDaContatto(c.username, `${c.nome} ${c.cognome}`);
+          list.appendChild(div);
+        }
+      }
+
+      document
+        .getElementById("searchContatti")
+        .addEventListener("input", (e) => {
+          const q = e.target.value.toLowerCase();
+          const filtrati = tuttiContatti.filter(
+            (c) =>
+              c.username.toLowerCase().includes(q) ||
+              c.nome.toLowerCase().includes(q) ||
+              c.cognome.toLowerCase().includes(q),
+          );
+          renderContatti(filtrati);
+        });
+
+      async function apriChatDaContatto(username, nome) {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ partecipanti: [username] }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          mostraTab("chats");
+          await caricaChats();
+          apriChat(data.chatId, nome, false);
+        }
+      }
+
+      // ─── MODAL AGGIUNGI CONTATTO ──────────────────────────
+      document.getElementById("btnAggiungiContatto").onclick = () => {
+        document.getElementById("inputUsername").value = "";
+        document.getElementById("feedbackAggiungi").textContent = "";
+        document.getElementById("modalAggiungiOverlay").classList.add("open");
+      };
+
+      document.getElementById("btnCancelAggiungi").onclick = () => {
+        document
+          .getElementById("modalAggiungiOverlay")
+          .classList.remove("open");
+      };
+
+      document.getElementById("btnConfermaAggiungi").onclick = async () => {
+        const username = document.getElementById("inputUsername").value.trim();
+        const feedback = document.getElementById("feedbackAggiungi");
+
+        if (!username) {
+          feedback.textContent = "Inserisci un username";
+          feedback.style.color = "#ff6b6b";
+          return;
+        }
+
+        const res = await fetch("/contatti", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          feedback.textContent = "Contatto aggiunto! ✅";
+          feedback.style.color = "#6bffb8";
+          await caricaContatti();
+          setTimeout(
+            () =>
+              document
+                .getElementById("modalAggiungiOverlay")
+                .classList.remove("open"),
+            1000,
+          );
+        } else {
+          feedback.textContent = data.message || "Errore";
+          feedback.style.color = "#ff6b6b";
+        }
+      };
+
+      // ─── MODAL NUOVA CHAT ─────────────────────────────────
+      document.getElementById("btnNuovaChat").onclick = (e) => {
+        e.preventDefault();
+        selectedForChat = [];
+        document.getElementById("selectedUsers").innerHTML = "";
+        document.getElementById("modalResults").innerHTML = "";
+        document.getElementById("modalSearch").value = "";
+        document.getElementById("nomeGruppo").value = "";
+        document.getElementById("nomeGruppo").style.display = "none";
+        document.getElementById("modalOverlay").classList.add("open");
+        document.getElementById("menu-toggle").checked = false;
+      };
+
+      document.getElementById("btnCancelModal").onclick = () => {
+        document.getElementById("modalOverlay").classList.remove("open");
+      };
+
+      let searchTimeout;
+      document.getElementById("modalSearch").addEventListener("input", (e) => {
+        clearTimeout(searchTimeout);
+        const q = e.target.value.trim();
+        if (q.length < 2) {
+          document.getElementById("modalResults").innerHTML = "";
+          return;
+        }
+        let utentiTrovati = [];
+        searchTimeout = setTimeout(async () => {
+          utentiTrovati = await cercaUtenti(q);
+          if (!utentiTrovati || utentiTrovati.length === 0) {
+            document.getElementById("modalResults").innerHTML =
+              `<p style="color:rgba(255,255,255,0.5);font-size:13px;padding:8px;">Nessun utente trovato</p>`;
+            return;
+          }
+
+          for (const u of utentiTrovati) {
+            if (selectedForChat.find((s) => s.idUtente === u.idUtente))
+              continue;
+            const div = document.createElement("div");
+            div.className = "modalUser";
+            div.innerHTML = `<img src="icone/defaultUser.png" /><span><b>${u.username}</b> — ${u.nome} ${u.cognome}</span>`;
+            div.onclick = () => selezionaUtente(u);
+            document.getElementById("modalResults").appendChild(div);
+          }
+        }, 400);
+      });
+
+      async function cercaUtenti(username) {
+        const res = await fetch(
+          `/users/search?username=${encodeURIComponent(username)}`,
+        );
+        const data = await res.json();
+        const results = document.getElementById("modalResults");
+        results.innerHTML = "";
+
+        return data.users;
+      }
+
+      function selezionaUtente(u) {
+        if (selectedForChat.find((s) => s.idUtente === u.idUtente)) return;
+        selectedForChat.push(u);
+        aggiornaSelectedUI();
+        document.getElementById("modalResults").innerHTML = "";
+        document.getElementById("modalSearch").value = "";
+      }
+
+      function aggiornaSelectedUI() {
+        const div = document.getElementById("selectedUsers");
+        div.innerHTML = "";
+        for (const u of selectedForChat) {
+          const tag = document.createElement("div");
+          tag.className = "selectedTag";
+          tag.innerHTML = `${u.username} <span>✕</span>`;
+          tag.onclick = () => {
+            selectedForChat = selectedForChat.filter(
+              (s) => s.idUtente !== u.idUtente,
+            );
+            aggiornaSelectedUI();
+          };
+          div.appendChild(tag);
+        }
+        document.getElementById("nomeGruppo").style.display =
+          selectedForChat.length > 1 ? "block" : "none";
+      }
+
+      document.getElementById("btnCreaChat").onclick = async () => {
+        if (selectedForChat.length === 0) return;
+        const partecipanti = selectedForChat.map((u) => u.username);
+        const nomeGruppo = document.getElementById("nomeGruppo").value.trim();
+
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            partecipanti,
+            nomeGruppo: nomeGruppo || null,
+          }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          document.getElementById("modalOverlay").classList.remove("open");
+          await caricaChats();
+          const isGroup = selectedForChat.length > 1;
+          const nome = isGroup
+            ? nomeGruppo || "Gruppo"
+            : `${selectedForChat[0].nome} ${selectedForChat[0].cognome}`;
+          apriChat(data.chatId, nome, isGroup);
+        }
+      };
     </script>
   </body>
 </html>

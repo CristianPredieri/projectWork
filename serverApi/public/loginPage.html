@@ -1,23 +1,26 @@
 <!doctype html>
 <html>
   <head>
+    <!-- Metadati e configurazione della pagina -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>PopChat - Login</title>
-
+    <!-- Foglio di stile comune a tutte le pagine di autenticazione -->
     <link rel="stylesheet" href="common.css" />
   </head>
 
   <body>
     <div class="container">
+      <!-- Logo dell'applicazione -->
       <div class="logoArea">
         <img class="mascot" src="icone/icona2.png" />
       </div>
 
+      <!-- Form di login -->
       <div id="form">
         <h2>Accedi</h2>
 
         <form method="POST" id="loginForm">
+          <!-- Campo email o username -->
           <input
             id="userTag"
             type="text"
@@ -26,6 +29,7 @@
             required
           />
 
+          <!-- Campo password con pulsante mostra/nascondi -->
           <div class="psw-wrapper">
             <input
               id="password"
@@ -34,45 +38,56 @@
               placeholder="Password"
               required
             />
+            <!-- Pulsante per visualizzare la password -->
             <button type="button" onclick="togglePsw('password', this)">
               🐵
             </button>
           </div>
+
+          <!-- Messaggio di errore (se presente) -->
           <h3 id="badLogin"></h3>
 
+          <!-- Pulsante di invio del form -->
           <input type="submit" value="Accedi" />
         </form>
       </div>
 
+      <!-- Link per tornare indietro -->
       <a class="back" href="/index.html"> ← Torna indietro </a>
     </div>
   </body>
 
   <script>
+    // Funzione per mostrare/nascondere la password
     function togglePsw(fieldId, btn) {
       const input = document.getElementById(fieldId);
       if (input.type === "password") {
+        // Cambia da password a text (visibile)
         input.type = "text";
         btn.textContent = "🙈";
       } else {
+        // Cambia da text a password (nascosto)
         input.type = "password";
         btn.textContent = "🐵";
       }
     }
 
+    // Seleziona gli elementi del form
     const badLogin = document.querySelector("#badLogin");
     const userTag = document.querySelector("#userTag");
     const psw = document.querySelector("#password");
-
     const form = document.getElementById("loginForm");
 
+    // Event listener per l'invio del form
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      // Raccoglie i dati del form
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
       try {
+        // Invia i dati al server
         const response = await fetch("/login", {
           method: "POST",
           headers: {
@@ -83,25 +98,27 @@
 
         const res = await response.json();
 
+        // Se il login è riuscito, reindirizza
         if (res.redirect) {
           window.location.href = res.redirect;
         } else {
-          badLogin.textContent = res.message || "Credenziali errate!"; // ← fix: era .text()
-
-          userTag.value = ""; // ← fix: era .val()
-          psw.value = ""; // ← fix: era .val()
-
+          // Mostra il messaggio di errore
+          badLogin.textContent = res.message || "Credenziali errate!";
+          userTag.value = "";
+          psw.value = "";
           userTag.focus();
-
-          userTag.style.border = "3px solid red"; // ← fix: era .css()
-          psw.style.border = "3px solid red"; // ← fix: era .css()
+          // Evidenzia i campi con bordo rosso
+          userTag.style.border = "3px solid red";
+          psw.style.border = "3px solid red";
         }
       } catch (err) {
-        badLogin.textContent = "Errore di connessione"; // ← fix: era .text()
+        // Mostra errore di connessione
+        badLogin.textContent = "Errore di connessione";
         console.error(err);
       }
     });
 
+    // Rimuove il bordo rosso quando l'utente inizia a digitare
     userTag.addEventListener("input", () => {
       userTag.style.borderColor = "";
     });

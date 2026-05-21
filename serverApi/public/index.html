@@ -1,49 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-
-<head>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <head>
+    <!-- Metadati e configurazione della pagina -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PopChat - Sign Up</title>
+    <!-- Foglio di stile comune a tutte le pagine di autenticazione -->
+    <link rel="stylesheet" href="common.css" />
+  </head>
 
-    <link rel="stylesheet" href="common.css">
-
-</head>
-
-<!-- separa email e username -->
-
-<body>
-
+  <body>
     <div class="container">
+      <!-- Logo dell'applicazione -->
+      <div class="logoArea">
+        <img id="logoIndex" src="icone/icona2.png" />
+      </div>
 
-        <div class="logoArea">
-
-            <img id="logoIndex" src="icone/icona2.png">
-
-        </div>
-
-        <div id="scelta">
-                <button class="card" id="loginCard" onclick="loginPage()">Log In</button>
-
-                <button class="card" id="signupCard" onclick="signupPage()">Sign Up</button>
-        </div>
-
-        </div>
-
+      <!-- Scelta tra Login e Sign Up -->
+      <div id="scelta">
+        <!-- Pulsante per accedere al login -->
+        <button class="card" id="loginCard" onclick="loginPage()">
+          Log In
+        </button>
+        <!-- Pulsante per accedere al sign up -->
+        <button class="card" id="signupCard" onclick="signupPage()">
+          Sign Up
+        </button>
+      </div>
     </div>
+
+    <!-- Script per navigazione tra pagine -->
     <script>
-        function loginPage() {
-            window.location.href = "loginPage.html";
-        }
+      // Funzione per reindirizzare alla pagina di login
+      function loginPage() {
+        window.location.href = "loginPage.html";
+      }
 
-        function signupPage() {
-            window.location.href = "signup.html";
-        }
+      // Funzione per reindirizzare alla pagina di sign up
+      function signupPage() {
+        window.location.href = "signupPage.html";
+      }
     </script>
-
-</body>
-
-
-
+  </body>
 </html>

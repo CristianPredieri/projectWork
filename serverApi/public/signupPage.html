@@ -1,21 +1,24 @@
 <html>
   <head>
+    <!-- Metadati e configurazione della pagina -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>PopChat - Sign Up</title>
-
+    <!-- Foglio di stile comune a tutte le pagine di autenticazione -->
     <link rel="stylesheet" href="common.css" />
   </head>
 
   <body>
     <div class="container">
+      <!-- Logo dell'applicazione -->
       <div class="logoArea">
         <img class="mascot" src="icone/icona2.png" />
       </div>
 
+      <!-- Form di registrazione -->
       <div id="form">
         <h2>Iscriviti!</h2>
         <form id="signupForm">
+          <!-- Campo nome -->
           <input
             id="nome"
             type="text"
@@ -24,6 +27,7 @@
             minlength="3"
             required
           /><br />
+          <!-- Campo cognome -->
           <input
             id="cognome"
             type="text"
@@ -32,6 +36,7 @@
             minlength="3"
             required
           /><br />
+          <!-- Campo email -->
           <input
             id="email"
             type="email"
@@ -40,6 +45,7 @@
             minlength="3"
             required
           /><br />
+          <!-- Campo username -->
           <input
             id="username"
             type="text"
@@ -48,6 +54,7 @@
             minlength="3"
             required
           />
+          <!-- Campo password con pulsante mostra/nascondi -->
           <div class="psw-wrapper">
             <input
               id="password"
@@ -56,10 +63,12 @@
               placeholder="Password"
               required
             />
+            <!-- Pulsante per visualizzare la password -->
             <button type="button" onclick="togglePsw('password', this)">
               🐵
             </button>
           </div>
+          <!-- Campo conferma password -->
           <div class="psw-wrapper">
             <input
               id="controlloPassword"
@@ -68,6 +77,7 @@
               placeholder="Conferma la password"
               required
             />
+            <!-- Pulsante per visualizzare la conferma password -->
             <button
               type="button"
               onclick="togglePsw('controlloPassword', this)"
@@ -75,28 +85,33 @@
               🐵
             </button>
           </div>
+          <!-- Pulsante di invio del form -->
           <input type="submit" value="Registrati" />
+          <!-- Messaggio di errore (se presente) -->
           <h3 id="badSignup"></h3>
         </form>
       </div>
+      <!-- Link per tornare indietro -->
       <a class="back" href="../"> ← Torna indietro </a>
     </div>
   </body>
 
   <script>
+    // Funzione per mostrare/nascondere la password
     function togglePsw(fieldId, btn) {
       const input = document.getElementById(fieldId);
       if (input.type === "password") {
-        console.log("diventa text");
+        // Cambia da password a text (visibile)
         input.type = "text";
         btn.textContent = "🙈";
       } else {
+        // Cambia da text a password (nascosto)
         input.type = "password";
         btn.textContent = "🐵";
       }
     }
-    const form = document.getElementById("signupForm");
 
+    // Regole di validazione per i campi del form
     const rules = {
       nome: {
         regex: /^[a-zA-ZÀ-ù\s]{2,30}$/,
@@ -117,9 +132,11 @@
       },
     };
 
+    // Funzione per evidenziare il campo con errore
     function setError(fieldId) {
       const el = document.getElementById(fieldId);
       el.style.borderColor = "red";
+      // Rimuove il bordo rosso quando l'utente inizia a digitare
       el.addEventListener(
         "input",
         () => {
@@ -129,13 +146,19 @@
       );
     }
 
+    // Seleziona il form
+    const form = document.getElementById("signupForm");
+
+    // Event listener per l'invio del form
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      // Raccoglie i dati del form
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
       const badSignup = document.getElementById("badSignup");
 
-      // Validazione regex — segna TUTTI i campi sbagliati
+      // Validazione regex - segna TUTTI i campi sbagliati
       const errors = [];
       for (const [field, rule] of Object.entries(rules)) {
         if (!rule.regex.test(data[field])) {
@@ -144,16 +167,16 @@
         }
       }
 
+      // Se ci sono errori di validazione, mostra il primo e termina
       if (errors.length > 0) {
-        badSignup.textContent = errors[0].msg; // mostra il messaggio del primo errore
+        badSignup.textContent = errors[0].msg;
         badSignup.style.color = "red";
-        document.getElementById(errors[0].field).focus(); // focus sul primo campo sbagliato
+        document.getElementById(errors[0].field).focus();
         return;
       }
 
-      // Controllo conferma password
+      // Controlla che le due password coincidano
       if (data.password != data.controlloPassword) {
-        console.log(data.password, data.controllaPassword);
         badSignup.textContent = "Le password non coincidono";
         badSignup.style.color = "red";
         setError("password");
@@ -162,6 +185,7 @@
         return;
       }
 
+      // Invia i dati di registrazione al server
       await fetch("/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -169,9 +193,11 @@
       })
         .then((res) => res.json())
         .then((res) => {
+          // Se la registrazione è riuscita, reindirizza al login
           if (res.redirect) {
             window.location.href = res.redirect;
           } else {
+            // Mostra il messaggio di errore
             badSignup.textContent =
               res.message || "Errore durante la registrazione";
             badSignup.style.color = "red";

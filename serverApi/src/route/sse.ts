@@ -27,6 +27,38 @@ export default function (context: Context) {
     context.sessions.set(userId, session)
     console.log(`SSE connesso: utente ${userId}`)
 
+   
+
+    // ← AGGIUNGI QUI
+    // Aggiorna a "consegnato" tutti i messaggi inviati a questo utente che erano ancora "inviato"
+    const msgDaConsegnare = await pool.query(`
+    SELECT DISTINCT sender_id, chat_id FROM msg 
+    JOIN partecipanti_chat p ON p.chat_id = msg.chat_id AND p.user_id = ?
+    WHERE msg.sender_id != ? AND msg.statusMsg = 'inviato'
+`, [userId, userId])
+
+    await pool.query(`
+    UPDATE msg 
+    JOIN partecipanti_chat p ON p.chat_id = msg.chat_id AND p.user_id = ?
+    SET msg.statusMsg = 'consegnato'
+    WHERE msg.sender_id != ? AND msg.statusMsg = 'inviato'
+`, [userId, userId])
+
+    // Notifica ogni mittente via SSE
+    for (const m of msgDaConsegnare) {
+      const sseMittente = context.sessions.get(String(m.sender_id))
+      if (sseMittente) {
+        try {
+          await sseMittente.push(
+            { chatId: Number(m.chat_id) },
+            "messaggio-consegnato"
+          )
+        } catch (e) {
+          context.sessions.delete(String(m.sender_id))
+        }
+      }
+    }
+
     // Quando il client si disconnette, rimuovi la sessione
     req.raw.on("close", () => {
       context.sessions.delete(userId)

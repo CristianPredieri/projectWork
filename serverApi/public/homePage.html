@@ -354,7 +354,6 @@
         const userList = document.getElementById("userList");
         userList.innerHTML = "";
         for (const c of data.chats) {
-          console.log(c.idChat, "unreadCount:", c.unreadCount); // ← aggiungi
           const nome = c.is_group ? c.nomeChat : `${c.nome} ${c.cognome}`;
         }
         if (!data.chats || data.chats.length === 0) {
@@ -519,7 +518,6 @@
         });
 
       eventSource.addEventListener("messaggi-letti", (e) => {
-        console.log("messaggi-letti ricevuto:", e.data); // ← aggiungi
         const data = JSON.parse(e.data);
         if (Number(data.chatId) === Number(chatCorrenteId)) {
           // aggiorna tutte le spunte dei messaggi sent a blu
@@ -529,6 +527,20 @@
               el.className = "msgStatus read";
               el.textContent = "✓✓";
             });
+        }
+      });
+
+      eventSource.addEventListener("messaggio-consegnato", (e) => {
+        const data = JSON.parse(e.data);
+        if (Number(data.chatId) === Number(chatCorrenteId)) {
+          // aggiorna l'ultima spunta sent da ✓ a ✓✓ grigio
+          const spunte = document.querySelectorAll(
+            ".message.sent .msgStatus.sent",
+          );
+          spunte.forEach((el) => {
+            el.className = "msgStatus delivered";
+            el.textContent = "✓✓";
+          });
         }
       });
 

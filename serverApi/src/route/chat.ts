@@ -156,15 +156,20 @@ export default function (context: Context) {
         for (const p of partecipanti) {
             const sseSession = context.sessions.get(String(p.user_id))
             if (sseSession) {
-                await sseSession.push(
-                    {
-                        chatId: Number(chatId),
-                        senderId: myId,
-                        username,
-                        content: body.content.trim()  // mando in chiaro via SSE (già su HTTPS)
-                    },
-                    "nuovo-messaggio"
-                )
+                try {
+                    await sseSession.push(
+                        {
+                            chatId: Number(chatId),
+                            senderId: myId,
+                            username,
+                            content: body.content.trim()  // mando in chiaro via SSE (già su HTTPS)
+                        },
+                        "nuovo-messaggio"
+                    )
+                } catch (e) {
+                    context.sessions.delete(String(p.user_id))
+                }
+
             }
         }
 
@@ -180,6 +185,17 @@ export default function (context: Context) {
                     "UPDATE msg SET statusMsg = 'consegnato' WHERE idMsg = ?",
                     [result.insertId], pool
                 )
+                const sseMittente = context.sessions.get(String(myId))
+                if (sseMittente) {
+                    try {
+                        await sseMittente.push(
+                            { chatId: Number(chatId), msgId: Number(result.insertId) },
+                            "messaggio-consegnato"
+                        )
+                    } catch (e) {
+                        context.sessions.delete(String(myId))
+                    }
+                }
             }
         }
 
@@ -243,13 +259,17 @@ export default function (context: Context) {
 
         for (const m of mittenti) {
             const sseMittente = context.sessions.get(String(m.sender_id))
-                console.log(`SSE per utente ${m.sender_id}:`, sseMittente ? "connesso" : "non connesso")
 
+            
             if (sseMittente) {
-                await sseMittente.push(
-                    { chatId: Number(chatId) },
-                    "messaggi-letti"
-                )
+                try {
+                    await sseMittente.push(
+                        { chatId: Number(chatId) },
+                        "messaggi-letti"
+                    )
+                } catch (e) {
+                    context.sessions.delete(String(m.sender_id))
+                }
             }
         }
 
@@ -438,6 +458,17 @@ export default function (context: Context) {
                 const sseSession = context.sessions.get(String(p.user_id))
 
                 if (sseSession) {
+                    try {
+                        await sseSession.push(
+                            {
+                                chatId: Number(chatId),
+                                message: "Chat eliminata"
+                            },
+                            "chat-eliminata"
+                        )
+                    } catch (e) {
+                        context.sessions.delete(String(p.user_id))
+                    }
                     sseSession.push(
                         {
                             chatId: Number(chatId),
@@ -480,14 +511,19 @@ export default function (context: Context) {
         const sseKicked = context.sessions.get(String(userId))
         if (sseKicked) {
             const chatNome = await executeQuery("SELECT nomeChat FROM chat WHERE idChat = ?", [chatId], pool)
-            await sseKicked.push(
-                {
-                    chatId: Number(chatId),
-                    nomeChat: chatNome[0]?.nomeChat,
-                    message: isSelf ? "Hai abbandonato il gruppo" : "Sei stato rimosso dal gruppo"
-                },
-                isSelf ? "chat-abbandonata" : "removed-from-chat"
-            )
+           
+           try {
+                await sseKicked.push(
+                    {
+                        chatId: Number(chatId),
+                        nomeChat: chatNome[0]?.nomeChat,
+                        message: isSelf ? "Hai abbandonato il gruppo" : "Sei stato rimosso dal gruppo"
+                    },
+                    isSelf ? "chat-abbandonata" : "removed-from-chat"
+                )
+            } catch (e) {
+                context.sessions.delete(String(userId))
+            }
         }
 
         // se chi è uscito era l'admin → passa l'admin al primo membro rimasto
@@ -501,10 +537,14 @@ export default function (context: Context) {
             // notifica il nuovo admin via SSE
             const sseSession = context.sessions.get(String(nuovoAdmin.user_id))
             if (sseSession) {
-                await sseSession.push(
-                    { chatId, message: "Sei il nuovo amministratore del gruppo" },
-                    "nuovo-admin"
-                )
+                try {
+                    await sseSession.push(
+                        { chatId, message: "Sei il nuovo amministratore del gruppo" },
+                        "nuovo-admin"
+                    )
+                } catch (e) {
+                    context.sessions.delete(String(nuovoAdmin.user_id))
+                }
             }
         }
 
